@@ -7,6 +7,8 @@ import authRoutes from './routes/auth.routes';
 import { errorHandler } from './middleware/error.middleware';
 import { logger } from './middleware/logger.middleware';
 import { connectRedis } from './utils/redis';
+require('dotenv').config(); // Loads variables from .env into process.env
+
 
 dotenv.config();
 

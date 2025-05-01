@@ -1,4 +1,4 @@
-import { Task } from '../src/models/task.model';
+import { Task } from '../models/task.model';
 
 describe('Task Model', () => {
   it('should be invalid if title is empty', async () => {
