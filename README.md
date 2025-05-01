@@ -86,6 +86,16 @@ docker-compose up --build
 
 
 ---
+#JEST TESTING-->Used jest for unit testing
+
+# Install testing dependencies (if not already installed)
+npm install --save-dev jest ts-jest @types/jest supertest mongodb-memory-server
+
+# Run tests
+npm test
+
+# Run tests with open handle detection (for debugging)
+npm test -- --detectOpenHandles
 
 ## ⚡ Redis Caching
 
