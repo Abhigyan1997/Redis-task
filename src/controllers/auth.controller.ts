@@ -7,11 +7,17 @@ import { compare } from 'bcryptjs';
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Basic validation
     if (!name || !email || !password) {
-      return res.status(400).json({ message: 'All fields are required' });
+      return res.status(400).json({ message: 'Name, email, and password are required' });
+    }
+
+    // Validate role
+    const validRoles = ['user', 'admin'];
+    if (role && !validRoles.includes(role)) {
+      return res.status(400).json({ message: 'Invalid role specified' });
     }
 
     // Check for existing user
@@ -23,7 +29,8 @@ export const register = async (req: Request, res: Response) => {
     const user = await User.create({
       name,
       email,
-      password: await bcrypt.hash(password, 10)
+      password: await bcrypt.hash(password, 10),
+      role: role || 'user' // default to 'user' if not provided
     });
 
     // Return user data (excluding password)

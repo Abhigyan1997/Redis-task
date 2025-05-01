@@ -75,22 +75,21 @@ export const getTaskById = async (req: Request, res: Response) => {
 };
 export const createTask = async (req: Request, res: Response) => {
   try {
-    // Validate required fields
-    if (!req.body.title) {
-      return res.status(400).json({ error: 'Title is required' });
-    }
+    const { title, description, status, dueDate, assignedTo } = req.body;
 
-    // Create task with only allowed fields
+    // Create the task with all allowed fields
     const task = await Task.create({
-      title: req.body.title,
-      description: req.body.description,
-      status: req.body.status || 'pending' // Default status
+      title,
+      description,
+      status: status || 'pending', // default status
+      dueDate,
+      assignedTo
     });
 
     // Clear cache
     await redisClient.del('tasks_cache');
 
-    // Return success response with task data
+    // Send success response
     res.status(201).json({
       success: true,
       data: task
