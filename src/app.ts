@@ -18,6 +18,11 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(logger);
 
+
+app.get('/', (req, res) => {
+    res.send('API is running ✅');
+  });
+  
 // Routes
 app.use('/tasks', taskRoutes);
 app.use('/auth', authRoutes);
