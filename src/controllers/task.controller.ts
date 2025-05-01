@@ -2,6 +2,38 @@ import { Request, Response } from 'express';
 import { Task } from '../models/task.model';
 import redisClient from '../utils/redis';
 
+export const createTask = async (req: Request, res: Response) => {
+  try {
+    const { title, description, status, dueDate, assignedTo } = req.body;
+
+    // Create the task with all allowed fields
+    const task = await Task.create({
+      title,
+      description,
+      status: status || 'pending', // default status
+      dueDate,
+      assignedTo
+    });
+
+    // Clear cache
+    await redisClient.del('tasks_cache');
+
+    // Send success response
+    res.status(201).json({
+      success: true,
+      data: task
+    });
+
+  } catch (error) {
+    console.error('Task creation failed:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Internal server error' 
+    });
+  }
+};
+
+
 export const getAllTasks = async (req: Request, res: Response) => {
   try {
     const key = 'tasks_cache';
@@ -70,36 +102,6 @@ export const getTaskById = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch task'
-    });
-  }
-};
-export const createTask = async (req: Request, res: Response) => {
-  try {
-    const { title, description, status, dueDate, assignedTo } = req.body;
-
-    // Create the task with all allowed fields
-    const task = await Task.create({
-      title,
-      description,
-      status: status || 'pending', // default status
-      dueDate,
-      assignedTo
-    });
-
-    // Clear cache
-    await redisClient.del('tasks_cache');
-
-    // Send success response
-    res.status(201).json({
-      success: true,
-      data: task
-    });
-
-  } catch (error) {
-    console.error('Task creation failed:', error);
-    res.status(500).json({ 
-      success: false,
-      error: 'Internal server error' 
     });
   }
 };
